@@ -21,7 +21,7 @@ const customStyles = {
 
 Modal.setAppElement("#root");
 
-const List = ({ list, total }) => {
+const List = React.memo(({ list, total }) => {
   const { setBoughtFood } = useContext(Context);
   const { boughtFood } = useContext(Context);
   const { setTotal } = useContext(Context);
@@ -31,7 +31,6 @@ const List = ({ list, total }) => {
   const [checkout, setCheckout] = useState(0);
   const [saveCode, setSaveCode] = useState("");
   const loadPizzaRef = React.createRef();
-  const [isReset, setIsReset] = useState(false);
 
   useEffect(() => {
     if (localStorage.getItem("amount-coupon"))
@@ -39,9 +38,14 @@ const List = ({ list, total }) => {
   }, []);
 
   const reset = () => {
+    setBoughtFood((prev) => {
+      return boughtFood.map((element) => {
+        element.count = 0;
+        return element;
+      });
+    });
     setBoughtFood([list[0]]);
     setTotal(list[0].price);
-    setIsReset(true);
     localStorage.setItem("bought-foods", JSON.stringify(boughtFood));
   };
 
@@ -108,7 +112,7 @@ const List = ({ list, total }) => {
             return a + b.price * b.count;
           }, 0)
         );
-        console.log(boughtFood)
+        console.log(boughtFood);
       }
     });
     setSaveIsOpen(false);
@@ -268,8 +272,6 @@ const List = ({ list, total }) => {
             <Item
               item={item}
               key={item.name}
-              isReset={isReset}
-              setIsReset={setIsReset}
             />
           ) : null
         )}
@@ -323,6 +325,6 @@ const List = ({ list, total }) => {
       </div>
     </>
   );
-};
+});
 
 export default List;

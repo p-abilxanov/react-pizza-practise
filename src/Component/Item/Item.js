@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Context from "../Context/Context";
 
-const Item = ({ item, isReset, setIsReset }) => {
+const Item = React.memo(({ item }) => {
   const [count, setCount] = useState(0);
   const { totalMinus } = useContext(Context);
   const { totalPlus } = useContext(Context);
@@ -22,11 +22,6 @@ const Item = ({ item, isReset, setIsReset }) => {
   }, [boughtFood]);
 
   useEffect(() => {
-    setCount(0);
-    setIsReset(false);
-  }, [isReset]);
-
-  useEffect(() => {
     boughtFood.forEach((element) => {
       if (item.id === element.id) {
         setCount((prev) => element.count);
@@ -35,7 +30,7 @@ const Item = ({ item, isReset, setIsReset }) => {
   }, []);
 
   const increment = () => {
-    setCount(count + 1);
+    setCount((prev) => prev + 1);
     newItem.count += 1;
 
     setBoughtFood([
@@ -108,6 +103,6 @@ const Item = ({ item, isReset, setIsReset }) => {
       </div>
     </div>
   );
-};
+});
 
 export default Item;
